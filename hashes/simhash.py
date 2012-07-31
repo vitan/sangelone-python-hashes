@@ -20,7 +20,7 @@ class simhash(hashtype):
         Reference used: http://dsrg.mff.cuni.cz/~holub/sw/shash
         """
         if type(tokens) == str or type(tokens) == unicode:
-            tokens = get_ngram_tokens(tokens.split())
+            tokens = self._get_ngram_tokens(tokens.split(), 3)
         v = [0]*self.hashbits    
         for t in [self._string_hash(x) for x in tokens]:
             bitmask = 0
@@ -37,12 +37,12 @@ class simhash(hashtype):
                 fingerprint += 1 << i        
         self.hash = fingerprint
 
-    def get_ngram_tokens(tokens=None, n=3):
+    def _get_ngram_tokens(self, tokens=None, n=3):
         if tokens == None:
             return None
         ngram_tokens = []
-       for i in range(3, len(tokens)+1):
-           ngram_tokens.append(' '.join(tokens[i-3,i]))
+        for i in range(n, len(tokens)+1):
+            ngram_tokens.append(' '.join(tokens[i-n:i]))
         return ngram_tokens
 
     def _string_hash(self, v):
